@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta http-equiv="X-UA-Compatible" content="ie=edge">
+        <title>Edit Account</title>
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" integrity="sha384-WskhaSGFgHYWDcbwN70/dfYBj47jz9qbsMId/iRN3ewGhXQFZCSftd1LZCfmhktB" crossorigin="anonymous">
+        <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js" integrity="sha384-smHYKdLADwkXOn1EmN1qk/HfnUcbVRZyYmZ4qpPea6sjB/pTJ0euyQp0Mk8ck+5T" crossorigin="anonymous"></script>
+    </head>
+    <body>
+        <nav class="navbar navbar-dark bg-dark">
+            <span class="navbar-brand">Welcome, {{ request.session.name }}</span>
+            <form class="form-inline" action="/logout" method="POST">
+                {% csrf_token %}
+                <a href="/quotes" class="btn btn-success my-2 my-sm-0 mr-3 float-right">Back</a>
+                <button class="btn btn-danger my-2 my-sm-0" type="submit">Logout</button>
+            </form>
+        </nav>
+        <h3 class="mt-4 ml-4">Edit My Account</h3>
+        <form class="ml-4 mt-3 w-75" action="/update" method="POST">
+            {% csrf_token %}
+            <div class="form-group">
+                <label for="first_name">First Name</label>
+                <input type="text" class="form-control" id="first_name" name="fn_input" placeholder="First Name" value="{{ first_name }}">
+            </div>
+            <div class="form-group">
+                <label for="last_name">Last Name</label>
+                <input type="text" class="form-control" id="last_name" name="ln_input" placeholder="Last Name" value="{{ last_name }}">
+            </div>
+            <div class="form-group">
+                <label for="exampleInputEmail1">Email</label>
+                <input type="email" class="form-control" id="email" aria-describedby="emailHelp" name="email_input" placeholder="Enter email" value="{{ email }}">
+            </div>
+            <button type="submit" class="btn btn-primary">Submit</button>
+        </form>
+        {% if messages %}
+            {% for message in messages %}
+                <p class="ml-4 mt-3" style="color:red">{{ message }}</p>
+            {% endfor %}
+        {% endif %}
+    </body>
+</html>

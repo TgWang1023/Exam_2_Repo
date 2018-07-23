@@ -50,7 +50,39 @@ class UserManager(models.Manager):
         if not email_exists:
             errors['no_email'] = "This email address doesn't exist!"
         return errors
-        
+
+    def edit_validation(self, postData):
+        errors = {}
+        if len(postData['fn_input']) < 2:
+            errors['first_name_length'] = "First name must be greater than 2 characters!"
+        elif not NAME_REGEX.match(postData['fn_input']):
+            errors['first_name_format'] = "Invalid first name format!"
+        if len(postData['ln_input']) < 2:
+            errors['last_name_length'] = "Last name must be greater than 2 characters!"
+        elif not NAME_REGEX.match(postData['ln_input']):
+            errors['last_name_format'] = "Invalid last name format!"
+        if len(postData['email_input']) < 1:
+            errors['email_empty'] = "Email cannot be empty!"
+        elif not EMAIL_REGEX.match(postData['email_input']):
+            errors['email_format'] = "Invalid email format!"
+        else:
+            users = User.objects.all()
+            for user in users:
+                if user.email == postData['email_input']:
+                    errors['taken_email'] = "This email has already been taken!"
+                    break
+        return errors
+
+
+class QuoteManager(models.Manager):
+    def quote_validation(self, postData):
+        errors = {}
+        if len(postData['author_input']) < 3:
+            errors['author_length'] = "Author name must be greater than 3 characters!"  
+        if len(postData['quote_input']) < 10:
+            errors['quote_length'] = "Quote length must be greater than 10 characters!"
+        return errors
+
 class User(models.Model):
     first_name = models.CharField(max_length = 255)
     last_name = models.CharField(max_length = 255)
@@ -58,3 +90,11 @@ class User(models.Model):
     bday = models.DateField()
     pass_hs = models.CharField(max_length = 255)
     objects = UserManager()
+
+class Quote(models.Model):
+    author = models.CharField(max_length = 255)
+    content = models.TextField()
+    likes = models.IntegerField()
+    user = models.ForeignKey(User, related_name = "quotes")
+    user_liked = models.ManyToManyField(User, related_name = "liked_quotes")
+    objects = QuoteManager()
